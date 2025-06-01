@@ -1,3 +1,16 @@
+import express from 'express';
+
+const originalUse = express.application.use;
+express.application.use = function(...args) {
+  if (typeof args[0] === 'string') {
+    console.log('[DEBUG] app.use called with path:', args[0]);
+  } else {
+    console.log('[DEBUG] app.use called without path or with function');
+  }
+  return originalUse.apply(this, args);
+};
+
+
 import express from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
@@ -34,16 +47,7 @@ app.use((err, req, res, next) => {
   console.error('Error:', err);
   res.status(500).send('Internal Server Error');
 });
-const originalUse = express.application.use;
 
-express.application.use = function (...args) {
-  if (typeof args[0] === "string") {
-    console.log("Registering route/middleware at path:", args[0]);
-  } else {
-    console.log("Registering middleware without path or with function");
-  }
-  return originalUse.apply(this, args);
-};
 
 const PORT = process.env.PORT || 5001;
 const __dirname = path.resolve();
