@@ -119,7 +119,7 @@ export const useAuthStore = create((set, get) => ({
   },
   disconnectSocket: () => {
     const socket = get().socket;
-    if (socket) {
+    if (socket && typeof socket.off === "function") {
       socket.off(); // Remove all listeners
       socket.disconnect();
       set({ socket: null, onlineUsers: [] });

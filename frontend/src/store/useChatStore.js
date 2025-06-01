@@ -36,8 +36,11 @@ export const useChatStore = create((set, get) => ({
   sendMessage: async (messageData) => {
     const { selectedUser, messages } = get();
     try {
-      console.log(selectedUser._id)
-      const res = await axiosInstance.post(`/messages/send/${selectedUser._id}`, messageData);
+      console.log(selectedUser._id);
+      const res = await axiosInstance.post(
+        `/messages/send/${selectedUser._id}`,
+        messageData
+      );
       set({ messages: [...messages, res.data] });
     } catch (error) {
       toast.error(error.message);
@@ -50,11 +53,12 @@ export const useChatStore = create((set, get) => ({
 
     const socket = useAuthStore.getState().socket;
     if (!socket) {
-    toast.error("Socket connection not established.");
-    return;
-  }
+      toast.error("Socket connection not established.");
+      return;
+    }
     socket.on("newMessage", (newMessage) => {
-      const isMessageSentFromSelectedUser = newMessage.senderId === selectedUser._id;
+      const isMessageSentFromSelectedUser =
+        newMessage.senderId === selectedUser._id;
       if (!isMessageSentFromSelectedUser) return;
 
       set({
@@ -65,6 +69,7 @@ export const useChatStore = create((set, get) => ({
 
   unsubscribeFromMessages: () => {
     const socket = useAuthStore.getState().socket;
+    if (!socket) return; // <-- This line prevents the error
     socket.off("newMessage");
   },
 
