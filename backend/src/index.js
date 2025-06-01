@@ -34,7 +34,16 @@ app.use((err, req, res, next) => {
   console.error('Error:', err);
   res.status(500).send('Internal Server Error');
 });
+const originalUse = express.application.use;
 
+express.application.use = function (...args) {
+  if (typeof args[0] === "string") {
+    console.log("Registering route/middleware at path:", args[0]);
+  } else {
+    console.log("Registering middleware without path or with function");
+  }
+  return originalUse.apply(this, args);
+};
 
 const PORT = process.env.PORT || 5001;
 const __dirname = path.resolve();
