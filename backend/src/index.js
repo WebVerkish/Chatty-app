@@ -22,6 +22,19 @@ app.use(
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
+console.log("All routes being registered:");
+console.log("/users");
+console.log("/:id");
+console.log("/send/:id");
+console.log("/signup");
+console.log("/login");
+console.log("/logout");
+
+app.use((err, req, res, next) => {
+  console.error('Error:', err);
+  res.status(500).send('Internal Server Error');
+});
+
 
 const PORT = process.env.PORT || 5001;
 const __dirname = path.resolve();
@@ -38,6 +51,5 @@ if (process.env.NODE_ENV === "production") {
 }
 
 server.listen(5001, () => {
-  console.log("Server is running on port: " + PORT);
   connectDB();
 });
